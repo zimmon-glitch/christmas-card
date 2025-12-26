@@ -1,0 +1,257 @@
+<!-- generated HTML -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merry Christmas Animated</title>
+<style>
+  body {
+    margin: 0;
+    background: linear-gradient(to bottom, #b3e5fc, #e1f5fe);
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    color: #444;
+    text-align: center;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  .center {
+    position: absolute;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background: #f48fb1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #ec407a;
+  }
+  .tree-container {
+    position: relative;
+    margin-top: 50px;
+    display: inline-block;
+    opacity: 0;
+  }
+  .star {
+    opacity: 0;
+    transition: opacity 1s ease;
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: gold;
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+    box-shadow: 0 0 15px gold;
+  }
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .layer {
+    background: linear-gradient(to bottom, #66bb6a, #388e3c);
+    border-radius: 0 0 50% 50%;
+    margin-top: -15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.8s ease;
+  }
+  .layer:nth-child(1) { width: 30px; height: 30px; }
+  .layer:nth-child(2) { width: 90px; height: 50px; }
+  .layer:nth-child(3) { width: 150px; height: 70px; }
+  .layer:nth-child(4) { width: 210px; height: 90px; }
+  .layer:nth-child(5) { width: 270px; height: 110px; }
+  .trunk {
+    width: 40px;
+    height: 60px;
+    background: #8d6e63;
+    margin-top: -10px;
+    opacity: 0;
+    transform: scaleY(0);
+    transition: all 0.6s ease;
+  }
+  .gifts {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
+  }
+  .gift {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+  .gift::before,
+  .gift::after {
+    content: '';
+    position: absolute;
+    background: white;
+  }
+  .gift::before {
+    width: 100%;
+    height: 6px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+  .gift::after {
+    width: 6px;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .gift.red { background: #ef9a9a; }
+  .gift.blue { background: #90caf9; }
+  .gift.green { background: #a5d6a7; }
+  h1 {
+    margin-top: 30px;
+    font-size: 2.5em;
+    text-shadow: 0 0 15px #fff, 0 0 30px #f48fb1;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 1s ease;
+  }
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="center">
+  <button id="startBtn">Softly Press Button 🎄</button>
+</div>
+<div class="tree-container" id="treeContainer">
+  <div class="star" id="star"></div>
+  <div class="tree" id="tree">
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="trunk" id="trunk"></div>
+  </div>
+  <div class="gifts" id="gifts">
+    <div class="gift red"></div>
+    <div class="gift blue"></div>
+    <div class="gift green"></div>
+  </div>
+</div>
+<h1 id="greeting">Merry Christmas 🎄</h1>
+<script>
+function resizeSnow() {
+  const canvas = document.getElementById("snow");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeSnow();
+window.addEventListener("resize", () => {
+  clearTimeout(window.resizedFinished);
+  window.resizedFinished = setTimeout(resizeSnow, 200);
+});
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+const flakes = [];
+for (let i = 0; i < 200; i++) {
+  flakes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 4 + 1,
+    d: Math.random() + 0.5
+  });
+}
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  for (let f of flakes) {
+    ctx.moveTo(f.x, f.y);
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  moveSnow();
+}
+let angle = 0;
+function moveSnow() {
+  angle += 0.001;
+  for (let f of flakes) {
+    f.y += Math.pow(f.d, 2) + 1;
+    f.x += Math.sin(angle) * 1.2;
+    if (f.y > canvas.height) {
+      f.y = 0;
+      f.x = Math.random() * canvas.width;
+    }
+  }
+}
+setInterval(drawSnow, 25);
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.querySelector(".center").style.display = "none";
+  const treeContainer = document.getElementById("treeContainer");
+  treeContainer.style.opacity = 1;
+  const layers = document.querySelectorAll(".layer");
+  let delay = 500;
+  layers.forEach((layer) => {
+    setTimeout(() => {
+      layer.style.opacity = 1;
+      layer.style.transform = "scale(1)";
+    }, delay);
+    delay += 500;
+  });
+  setTimeout(() => {
+    const trunk = document.getElementById("trunk");
+    trunk.style.opacity = 1;
+    trunk.style.transform = "scaleY(1)";
+  }, delay);
+  delay += 600;
+  setTimeout(() => {
+    const star = document.getElementById("star");
+    star.style.opacity = 1;
+  }, delay);
+  delay += 800;
+  setTimeout(() => {
+    const gifts = document.getElementById("gifts");
+    gifts.style.opacity = 1;
+    gifts.style.transform = "translateY(0)";
+  }, delay);
+  delay += 1000;
+  setTimeout(() => {
+    const greet = document.getElementById("greeting");
+    greet.style.opacity = 1;
+    greet.style.transform = "scale(1)";
+  }, delay);
+});
+</script>
+</body>
+</html>
